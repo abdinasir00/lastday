@@ -1,10 +1,7 @@
 
 
 import { Link } from "react-router-dom"
-import { Home } from "lucide-react"
-import { Search } from "lucide-react"
-import { Bell } from "lucide-react"
-import { User } from "lucide-react"
+import { User, Plus, Bell, Search, Home  } from "lucide-react"
 
 
 
@@ -20,6 +17,11 @@ const Sidebar = () => {
           <Link to="/search" className="flex items-center space-x-2">
             <Search className="h-6 w-6 text-gray" />
             <button className="hover:bg-blue-600 rounded-md font-medium w-30 py-2 hover:text-white">Search</button>
+          </Link>
+          <Link to="/Create" className="flex items-center space-x-2">
+          
+            <Plus className="h-6 w-6 text-gray" />
+            <button className="hover:bg-blue-600 rounded-md font-medium w-30 py-2 hover:text-white">Create</button>
           </Link>
 
           <Link to="/notifications" className="flex items-center space-x-2">
