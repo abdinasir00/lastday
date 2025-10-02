@@ -1,19 +1,16 @@
 
-
-import { Link } from "react-router-dom";
-import { Home, Search, Bell, User, Plus } from "lucide-react";
+import { Link } from "react-router-dom"
+import { User, Plus, Bell, Search, Home  } from "lucide-react"
 
 const Sidebar = () => {
-  return (
-    <>
-      {/* Desktop Sidebar */}
-      <div className="hidden md:flex flex-col ml-12 px-6 my-8 space-y-4">
-        <Link to="/" className="flex items-center space-x-2">
-          <Home className="h-6 w-6 text-gray-600" />
-          <button className="hover:bg-blue-600 rounded-md font-medium w-30 px-3 py-2 hover:text-white">
-            Home
-          </button>
-        </Link>
+    return (
+      
+        <div className="flex ml-12 px-16 my-8">
+         <div className="text justify-between items-center">
+         <Link to="/" className="flex items-center space-x-2">
+            <Home className="h-6 w-6 text-gray" />
+            <button className="hover:bg-blue-600 rounded-md font-medium w-30 py-2 hover:text-white">Home</button>
+          </Link>
 
         <Link to="/search" className="flex items-center space-x-2">
           <Search className="h-6 w-6 text-gray-600" />
