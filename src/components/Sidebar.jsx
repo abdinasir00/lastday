@@ -1,11 +1,9 @@
 
+
 import { Link } from "react-router-dom";
 import { Home, Search, Bell, User, Plus } from "lucide-react";
 
-
-
 const Sidebar = () => {
-
   return (
     <>
       {/* Desktop Sidebar */}
