@@ -8,7 +8,7 @@ const Sidebar = () => {
     <>
       {/* Desktop Sidebar */}
       <div className="hidden md:flex flex-col ml-12 px-6 my-8 space-y-4">
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/Home" className="flex items-center space-x-2">
           <Home className="h-6 w-6 text-gray-600" />
           <button className="hover:bg-blue-600 rounded-md font-medium w-30 px-3 py-2 hover:text-white">
             Home
@@ -46,7 +46,7 @@ const Sidebar = () => {
 
       {/* Mobile Bottom Navbar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-md flex justify-around py-2 border-t">
-        <Link to="/" className="flex flex-col items-center text-gray-600 hover:text-blue-600">
+        <Link to="/Home" className="flex flex-col items-center text-gray-600 hover:text-blue-600">
           <Home className="h-6 w-6" />
           <button className="text-xs hover:text-blue-600">Home</button>
         </Link>
@@ -66,7 +66,7 @@ const Sidebar = () => {
           <button className="text-xs hover:text-blue-600">Alerts</button>
         </Link>
 
-        <Link to="/profile" className="flex flex-col items-center text-gray-600 hover:text-blue-600">
+        <Link to="/Profile" className="flex flex-col items-center text-gray-600 hover:text-blue-600">
           <User className="h-6 w-6" />
           <button className="text-xs hover:text-blue-600">Profile</button>
         </Link>

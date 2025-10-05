@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { LogOut, BadgePlus } from "lucide-react";
 import { useState } from "react";
+import Register from "../pages/Register"
 
 const Navbar = () => {
   const avatarLetter = "C"; // Xarafka ugu horeeya ee "ConnectHub"
@@ -26,11 +27,32 @@ const Navbar = () => {
                 <span className="font-medium text-gray-800">Jamila</span>
               </Link>
             </li>
+      
+
+
             <li>
-              <Link to="/logout">
+              <Link to="/" element={Register}  className=" flex gap-2">
+                <BadgePlus className="h-5 w-5 text-gray-700" /> 
+               <p> Register</p>
+               </Link> 
+            </li>
+
+            
+            <li>
+              <Link to="/login"  className=" flex gap-2">
                 <LogOut className="h-5 w-5 text-gray-700" />
+                               <p> Login</p>
               </Link>
             </li>
+
+                  <li>
+              <Link to="/logout"  className=" flex gap-2">
+                <LogOut className="h-5 w-5 text-gray-700" />
+                               <p> Log Out</p>
+              </Link>
+            </li>
+
+
           </ul>
         </nav>
 
@@ -69,3 +91,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
