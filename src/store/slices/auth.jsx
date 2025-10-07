@@ -7,7 +7,7 @@ export const userRegister = createAsyncThunk(
   "auth/userRegister",
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${BASE_URL}/api/auth/register`, userData);
+      const res = await axios.post(`${BASE_URL}/auth/register`, userData);
       console.log("data of user is", res.data.user);
       return res.data;
     } catch (error) {
@@ -24,7 +24,7 @@ export const userlogin = createAsyncThunk(
   "auth/userlogin",
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${BASE_URL}/api/auth/login`, userData);
+      const res = await axios.post(`${BASE_URL}/auth/login`, userData);
       console.log("data of user is", res.data.user);
       return res.data;
     } catch (error) {
@@ -50,7 +50,7 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  // reducers: {},
   extraReducers: (builder) => {
     builder
       // Register Cases
