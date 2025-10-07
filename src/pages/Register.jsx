@@ -1,16 +1,20 @@
 
 import React from "react";
+import  { useState } from "react"
 import { useForm } from "react-hook-form";
 import { RegisterSchema } from "../components/Schema/Register";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userRegister } from "../store/slices/auth";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { Eye, EyeOff } from "lucide-react"; 
 
 function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.auth);
+  const [showPassword, setShowPassword] = useState(false)
+
 
   const {
     register,
@@ -80,9 +84,9 @@ function Register() {
           </div>
 
           {/* Password */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 relative">
             <input
-              type="password"
+              type={showPassword? "text" : "password"}
               {...register("password")}
               placeholder="Enter your password"
               className={`border ${
@@ -91,6 +95,14 @@ function Register() {
                 errors.password ? "focus:ring-red-500" : "focus:ring-blue-500"
               }`}
             />
+       
+                   <button
+                     type="button"
+                     onClick={() => setShowPassword((prev) => !prev)}
+                 className="absolute right-3 top-5 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                   >
+                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                   </button>
             {errors.password && (
               <p className="text-red-500 text-sm font-medium">
                 {errors.password.message}
@@ -107,12 +119,6 @@ function Register() {
           {error && <p className="text-red-600 mt-2 text-center">{error}</p>}
         </form>
 
-        {/* <p className="text-center text-gray-600 mt-4 text-sm">
-          Already have an account?{" "}
-          <a href="/login" className="text-blue-600 hover:underline font-medium">
-            Login here
-          </a>
-        </p> */}
       </div>
     </div>
   );

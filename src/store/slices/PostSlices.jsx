@@ -28,4 +28,26 @@ const initialState =  {
 }
 
 
-const 
+const  postSlice = createSlice ({
+    name: "post",
+    initialState,
+    extraReducers : (builder) => {
+        builder
+        //createPost
+          .addCase(CreatePost.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+              })
+              .addCase(CreatePost.fulfilled, (state, action) => {
+                state.status = "success";
+                state.user = action.payload;
+                state.error = null;
+              })
+              .addCase(CreatePost.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || action.error.message;
+              });
+    }
+})
+
+export default postSlice.reducer;

@@ -13,6 +13,7 @@ import Register from './pages/Register'
 // import { Home } from "lucide-react";
 import Home from "./pages/Home"
 import Profile from "./pages/Profile"
+import NotificationsList from "./pages/NotificationsList";
 
 function App() {
   return (
@@ -29,11 +30,11 @@ function App() {
               <Route path="/login" element={ <Login/>} />
               <Route path="/search" element={<SearchPage />} />
 
-              <Route path="/notifications" element={<Notification />} />
+              <Route path="/notifications" element={<NotificationsList />} />
               <Route path="/create" element={<Create />} />
               <Route path="/Profile" element={<Profile />} />
               <Route path="/Create" element={<Create />} />
-              <Route path="/notifications" element={<Notification />} />
+              {/* <Route path="/notifications" element={<Notification />} /> */}
 
 
             </Routes>
