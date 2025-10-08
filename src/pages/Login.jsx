@@ -4,7 +4,7 @@ import { LoginSchema } from "../components/Schema/Login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { userlogin } from "../store/slices/auth";
+import { loginUser } from "../store/slices/auth"; // ← Changed from userlogin to loginUser
 import { Eye, EyeOff } from "lucide-react";
 
 // Login Schema
@@ -30,7 +30,7 @@ function Login() {
     // console.log("✅ Login Data:", data);
     // reset();
     try {
-      await dispatch(userlogin(data)).unwrap();
+      await dispatch(loginUser(data)).unwrap(); // ← Changed from userlogin to loginUser
       console.log(" successfully login :", data);
       navigate("/create");
       reset();
@@ -79,18 +79,13 @@ function Login() {
               }`}
             />
 
-              
-
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-5 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              className="absolute right-3 top-5 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
-
-
-
 
             {errors.password && (
               <p className="text-red-500 text-sm font-medium">

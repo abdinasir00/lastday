@@ -1,10 +1,9 @@
-
 import React from "react";
-import  { useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form";
 import { RegisterSchema } from "../components/Schema/Register";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userRegister } from "../store/slices/auth";
+import { registerUser } from "../store/slices/auth"; // ← Changed from userRegister to registerUser
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Eye, EyeOff } from "lucide-react"; 
@@ -14,7 +13,6 @@ function Register() {
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false)
-
 
   const {
     register,
@@ -28,7 +26,7 @@ function Register() {
 
   const onSend = async (data) => {
     try {
-      await dispatch(userRegister(data)).unwrap();
+      await dispatch(registerUser(data)).unwrap(); // ← Changed from userRegister to registerUser
       console.log("Registered successfully:", data);
       navigate("/login");
       reset();
@@ -86,7 +84,7 @@ function Register() {
           {/* Password */}
           <div className="flex flex-col gap-1 relative">
             <input
-              type={showPassword? "text" : "password"}
+              type={showPassword ? "text" : "password"}
               {...register("password")}
               placeholder="Enter your password"
               className={`border ${
@@ -96,13 +94,14 @@ function Register() {
               }`}
             />
        
-                   <button
-                     type="button"
-                     onClick={() => setShowPassword((prev) => !prev)}
-                 className="absolute right-3 top-5 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                   >
-                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                   </button>
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-5 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+            
             {errors.password && (
               <p className="text-red-500 text-sm font-medium">
                 {errors.password.message}
@@ -118,7 +117,6 @@ function Register() {
           </button>
           {error && <p className="text-red-600 mt-2 text-center">{error}</p>}
         </form>
-
       </div>
     </div>
   );
