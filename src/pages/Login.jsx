@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "../components/Schema/Login";
@@ -7,12 +8,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { userlogin } from "../store/slices/auth";
 import { Eye, EyeOff } from "lucide-react";
 
-// Login Schema
-
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { error } = useSelector((state) => state.auth);
+  const { error, status } = useSelector((state) => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -27,15 +26,16 @@ function Login() {
   });
 
   const onSend = async (data) => {
-    // console.log("✅ Login Data:", data);
-    // reset();
     try {
-      await dispatch(userlogin(data)).unwrap();
-      console.log(" successfully login :", data);
-      navigate("/create");
-      reset();
+      const result = await dispatch(userlogin(data)).unwrap();
+      console.log("✅ Successfully logged in:", result);
+
+      if (result?.token) {
+        navigate("/create");
+        reset();
+      }
     } catch (err) {
-      console.error("Failed to register:", err);
+      console.error("❌ Login error:", err);
     }
   };
 
@@ -67,7 +67,7 @@ function Login() {
           </div>
 
           {/* Password */}
-          <div className="flex flex-col gap-1 relative ">
+          <div className="flex flex-col gap-1 relative">
             <input
               type={showPassword ? "text" : "password"}
               {...register("password")}
@@ -79,18 +79,13 @@ function Login() {
               }`}
             />
 
-              
-
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-5 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              className="absolute right-3 top-5 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
-
-
-
 
             {errors.password && (
               <p className="text-red-500 text-sm font-medium">
@@ -101,9 +96,14 @@ function Login() {
 
           <button
             type="submit"
-            className="bg-blue-700 text-white py-2 rounded-lg font-semibold  hover:bg-blue-700 transition duration-300 cursor-pointer"
+            disabled={status === "loading"}
+            className={`py-2 rounded-lg font-semibold text-white ${
+              status === "loading"
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-700 hover:bg-blue-800"
+            }`}
           >
-            Login
+            {status === "loading" ? "Logging in..." : "Login"}
           </button>
 
           {error && <p className="text-red-600 mt-2 text-center">{error}</p>}
@@ -114,10 +114,6 @@ function Login() {
             Forgot your password?
           </a>
         </div>
-
-        <p className="text-center text-gray-600 mt-4 text-sm">
-  
-        </p>
       </div>
     </div>
   );

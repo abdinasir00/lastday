@@ -1,98 +1,118 @@
 
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { BASE_URL } from "../BaseUrl";
 import axios from "axios";
 
+// ---------------- REGISTER ----------------
 export const userRegister = createAsyncThunk(
   "auth/userRegister",
   async (userData, { rejectWithValue }) => {
     try {
       const res = await axios.post(`${BASE_URL}/auth/register`, userData);
-      console.log("data of user is", res.data.user);
+      console.log(" Registered user:", res.data);
+
+      // Save token and user to localStorage
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+      }
+
       return res.data;
     } catch (error) {
-      if (error.response?.data?.error) {
-        return rejectWithValue(error.response.data.error);
-      }
-      throw error;
+      const message =
+        error.response?.data?.error || error.message || "Registration failed";
+      return rejectWithValue(message);
     }
   }
 );
 
-
+// ---------------- LOGIN ----------------
 export const userlogin = createAsyncThunk(
   "auth/userlogin",
   async (userData, { rejectWithValue }) => {
     try {
       const res = await axios.post(`${BASE_URL}/auth/login`, userData);
-      console.log("data of user is", res.data.user);
+      console.log(" Logged in user:", res.data);
+
+      // Save token and user to localStorage
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+      }
+
       return res.data;
     } catch (error) {
-      if (error.response?.data?.error) {
-        return rejectWithValue(error.response.data.error);
-      }
-      throw error;
+      const message =
+        error.response?.data?.error || error.message || "Login failed";
+      return rejectWithValue(message);
     }
   }
 );
 
+// ---------------- LOGOUT ----------------
+export const userLogout = createAsyncThunk("auth/logoutUser", async () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+});
 
-// export const userLogout = createAsyncThunk("auth/logoutUser", async () => {
-//   await axios.post(`${BASE_URL}/auth/logout`);
-// });
-
+// ---------------- INITIAL STATE ----------------
 const initialState = {
-  user: null,
+  user: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null,
+  token: localStorage.getItem("token") || null,
   status: "idle",
   error: null,
 };
 
+// ---------------- SLICE ----------------
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  // reducers: {},
+  reducers: {},
   extraReducers: (builder) => {
+    // Register Cases
     builder
-      // Register Cases
       .addCase(userRegister.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
       .addCase(userRegister.fulfilled, (state, action) => {
         state.status = "success";
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
         state.error = null;
       })
       .addCase(userRegister.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload || action.error.message;
+        state.error = action.payload;
       });
 
-    //    login
-        builder
-          .addCase(userlogin.pending, (state) => {
+    // Login Cases
+    builder
+      .addCase(userlogin.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
       .addCase(userlogin.fulfilled, (state, action) => {
         state.status = "success";
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
         state.error = null;
       })
       .addCase(userlogin.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload || action.error.message;
+        state.error = action.payload;
+      });
 
-        
-      })
-      //      // Logout cases
-      // .addCase(userLogout.fulfilled, (state) => {
-      //   state.status = "idle";
-      //   state.isAuthenticated = false;
-      //   state.user = null;
-      //   state.error = null;
-      // })
-      
+    // Logout Cases
+    builder.addCase(userLogout.fulfilled, (state) => {
+      state.status = "idle";
+      state.user = null;
+      state.token = null;
+      state.error = null;
+    });
   },
 });
 
