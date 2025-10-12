@@ -7,6 +7,7 @@ import { userRegister } from "../store/slices/auth";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Eye, EyeOff } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ function Register() {
   };
 
   return (
-    <div className="flex justify-center items-start mt-30 mr-70">
+    <div className="flex justify-center items-start mt-50 ">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Register
@@ -116,6 +117,18 @@ function Register() {
           </button>
           {error && <p className="text-red-600 mt-2 text-center">{error}</p>}
         </form>
+
+           <div className="text-center mt-4">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-indigo-600 hover:underline cursor-pointer"
+            >
+              Sign In
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

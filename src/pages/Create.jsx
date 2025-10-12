@@ -2,10 +2,12 @@ import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadImage, CreatePost } from "../store/slices/PostSlices";
 import { Image } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function CreatePostForm() {
   const dispatch = useDispatch();
   const { status, error } = useSelector((state) => state.post);
+    const navigate = useNavigate();
 
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
@@ -49,6 +51,7 @@ function CreatePostForm() {
     setText("");
     setFile(null);
     setPreview("");
+    navigate("/home")
   };
 
   return (

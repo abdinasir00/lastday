@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userlogin } from "../store/slices/auth";
 import { Eye, EyeOff } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ function Login() {
       console.log("✅ Successfully logged in:", result);
 
       if (result?.token) {
-        navigate("/create");
+        navigate("/Home");
         reset();
       }
     } catch (err) {
@@ -40,7 +41,7 @@ function Login() {
   };
 
   return (
-    <div className="flex justify-center items-start mt-30 mr-70">
+    <div className="flex justify-center items-start mt-50 ">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Log In
@@ -108,6 +109,13 @@ function Login() {
 
           {error && <p className="text-red-600 mt-2 text-center">{error}</p>}
         </form>
+
+                <div className="text-center mt-4 text-sm text-gray-800">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-indigo-600 hover:underline">
+            Sign Up
+          </Link>
+        </div>
 
         <div className="text-center mt-4">
           <a href="#" className="text-sm text-indigo-600 hover:underline">
