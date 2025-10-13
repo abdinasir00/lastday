@@ -5,7 +5,7 @@ import { LoginSchema } from "../components/Schema/Login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { userlogin } from "../store/slices/auth";
+import { loginUser } from "../store/slices/auth"; // ← Changed from userlogin to loginUser
 import { Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -28,6 +28,7 @@ function Login() {
 
   const onSend = async (data) => {
     try {
+
       const result = await dispatch(userlogin(data)).unwrap();
       console.log("✅ Successfully logged in:", result);
 
@@ -35,6 +36,11 @@ function Login() {
         navigate("/Home");
         reset();
       }
+
+      await dispatch(loginUser(data)).unwrap(); // ← Changed from userlogin to loginUser
+      console.log(" successfully login :", data);
+      navigate("/create");
+      reset();
     } catch (err) {
       console.error("❌ Login error:", err);
     }

@@ -1,6 +1,28 @@
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { BASE_URL } from "../BaseUrl";
+
+import {
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from "@reduxjs/toolkit";
+
 import axios from "axios";
+import { BASE_URL } from "../baseUrl";
+
+// Helper function to get the authorization header
+const getAuthHeader = () => {
+  const token = localStorage.getItem("authToken");
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+  };
+};
+
 
 // ---------------- CHECK STATUS ----------------
 export const CheckStatus = createAsyncThunk(
@@ -13,14 +35,24 @@ export const CheckStatus = createAsyncThunk(
         },
       });
       return res.data.user;
+
+// Check authentication status
+export const checkAuthStatus = createAsyncThunk(
+  "auth/checkAuthStatus",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/users/me`,
+        getAuthHeader()
+      );
+      return response.data;
+
     } catch (error) {
-      if (error.response?.data?.error) {
-        return rejectWithValue(error.response.data.error);
-      }
-      throw error;
+      throw new Error(error.response?.data?.error || "Unauthorized");
     }
   }
 );
+
 
 // ---------------- REGISTER ----------------
 export const userRegister = createAsyncThunk(
@@ -82,6 +114,86 @@ const initialState = {
     ? JSON.parse(localStorage.getItem("user"))
     : null,
   token: localStorage.getItem("token") || null,
+
+// Register user
+export const registerUser = createAsyncThunk(
+  "auth/registerUser",
+  async (userData) => {
+    try {
+      console.log("USERDATA", userData);
+      const response = await axios.post(
+        `${BASE_URL}/auth/register`,
+        userData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      console.log("response", response);
+      const { token, user } = response.data;
+      localStorage.setItem("authToken", token);
+      return user;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || "Registration failed");
+    }
+  }
+);
+
+// Login user
+export const loginUser = createAsyncThunk(
+  "auth/loginUser",
+  async (userData) => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/auth/login`,
+        userData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      const { token, user } = response.data;
+      localStorage.setItem("authToken", token);
+      return user;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || "Login failed");
+    }
+  }
+);
+
+// Logout user
+const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
+  localStorage.removeItem("authToken");
+});
+
+export const fetchConnections = createAsyncThunk(
+  "auth/fetchConnections",
+  async (userId, thunkAPI) => {
+    try {
+      const [followingRes, followersRes] = await Promise.all([
+        axios.get(`${BASE_URL}/users/me/following`, getAuthHeader()),
+        axios.get(`${BASE_URL}/users/me/followers`, getAuthHeader()),
+      ]);
+      console.log("Raw following:", followingRes.data);
+      return {
+        following: followingRes.data.map((u) => u.id),
+        followers: followersRes.data.map((u) => u.id),
+      };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.error || "Failed to fetch connections"
+      );
+    }
+  }
+);
+
+const initialState = {
+  isAuthenticated: !!localStorage.getItem("authToken"),
+  user: null,
   status: "idle",
   error: null,
   isAuthenticated: !!localStorage.getItem("token"),      // important case 
@@ -91,10 +203,19 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
+
   reducers: {},
+
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+  },
+
   extraReducers: (builder) => {
     // REGISTER
     builder
+
       .addCase(userRegister.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -103,11 +224,40 @@ const authSlice = createSlice({
         state.status = "success";
         state.user = action.payload.user;
         state.token = action.payload.token;
+
+      // Check Auth
+      .addCase(checkAuthStatus.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(checkAuthStatus.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.isAuthenticated = true;
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(checkAuthStatus.rejected, (state, action) => {
+        state.status = "idle";
+        state.isAuthenticated = false;
+        state.user = null;
+        state.error = action.error.message;
+      })
+
+      // Register
+      .addCase(registerUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.isAuthenticated = true;
+        state.user = action.payload;
+
         state.error = null;
         state.isAuthenticated = true; 
       })
-      .addCase(userRegister.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state, action) => {
         state.status = "failed";
+
         state.error = action.payload;
       });
 
@@ -121,11 +271,27 @@ const authSlice = createSlice({
         state.status = "success";
         state.user = action.payload.user;
         state.token = action.payload.token;
+
+        state.error = action.error.message;
+      })
+
+      // Login
+      .addCase(loginUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.isAuthenticated = true;
+        state.user = action.payload;
+        console.log("action.payload", action.payload);
+
         state.error = null;
         state.isAuthenticated = true;
       })
-      .addCase(userlogin.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
+
         state.error = action.payload;
         state.isAuthenticated = false;
       });
@@ -179,8 +345,39 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.error = action.payload;
+
+        state.error = action.error.message;
+      })
+
+      // Logout
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.status = "idle";
+        state.isAuthenticated = false;
+        state.user = null;
+        state.error = null;
+      })
+      .addCase(fetchConnections.fulfilled, (state, action) => {
+        state.followingIds = action.payload.following;
+        state.followerIds = action.payload.followers;
+      })
+      // Update user when profile is updated
+      .addCase('profile/updateUserProfile/fulfilled', (state, action) => {
+        if (state.user && (state.user.id === action.payload.id || state.user._id === action.payload.id)) {
+          state.user = { ...state.user, ...action.payload };
+          console.log("Updated user in auth slice:", state.user);
+        }
+      })
+      // Update user when profile is fetched
+      .addCase('profile/fetchMyProfile/fulfilled', (state, action) => {
+        if (state.user && (state.user.id === action.payload.id || state.user._id === action.payload.id)) {
+          state.user = { ...state.user, ...action.payload };
+          console.log("Updated user in auth slice from fetch:", state.user);
+        }
+
       });
   },
 });
 
+export const { clearError } = authSlice.actions;
+export { logoutUser };
 export default authSlice.reducer;

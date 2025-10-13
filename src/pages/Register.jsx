@@ -1,9 +1,13 @@
 import React from "react";
+
 import { useState } from "react";
+
+import { useState } from "react"
+
 import { useForm } from "react-hook-form";
 import { RegisterSchema } from "../components/Schema/Register";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userRegister } from "../store/slices/auth";
+import { registerUser } from "../store/slices/auth"; // ← Changed from userRegister to registerUser
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Eye, EyeOff } from "lucide-react";
@@ -13,7 +17,11 @@ function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.auth);
+
   const [showPassword, setShowPassword] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false)
+
 
   const {
     register,
@@ -27,7 +35,7 @@ function Register() {
 
   const onSend = async (data) => {
     try {
-      await dispatch(userRegister(data)).unwrap();
+      await dispatch(registerUser(data)).unwrap(); // ← Changed from userRegister to registerUser
       console.log("Registered successfully:", data);
       navigate("/login");
       reset();
@@ -102,6 +110,7 @@ function Register() {
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
+
             {errors.password && (
               <p className="text-red-500 text-sm font-medium">
                 {errors.password.message}
@@ -129,6 +138,7 @@ function Register() {
             </Link>
           </p>
         </div>
+
       </div>
     </div>
   );
