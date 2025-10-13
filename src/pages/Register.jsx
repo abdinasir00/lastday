@@ -1,18 +1,27 @@
 import React from "react";
+
+import { useState } from "react";
+
 import { useState } from "react"
+
 import { useForm } from "react-hook-form";
 import { RegisterSchema } from "../components/Schema/Register";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser } from "../store/slices/auth"; // ← Changed from userRegister to registerUser
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Eye, EyeOff } from "lucide-react"; 
+import { Eye, EyeOff } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.auth);
+
+  const [showPassword, setShowPassword] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false)
+
 
   const {
     register,
@@ -36,7 +45,7 @@ function Register() {
   };
 
   return (
-    <div className="flex justify-center items-start mt-30 mr-70">
+    <div className="flex justify-center items-start mt-50 ">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Register
@@ -93,7 +102,7 @@ function Register() {
                 errors.password ? "focus:ring-red-500" : "focus:ring-blue-500"
               }`}
             />
-       
+
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
@@ -101,7 +110,7 @@ function Register() {
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
-            
+
             {errors.password && (
               <p className="text-red-500 text-sm font-medium">
                 {errors.password.message}
@@ -117,6 +126,19 @@ function Register() {
           </button>
           {error && <p className="text-red-600 mt-2 text-center">{error}</p>}
         </form>
+
+           <div className="text-center mt-4">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-indigo-600 hover:underline cursor-pointer"
+            >
+              Sign In
+            </Link>
+          </p>
+        </div>
+
       </div>
     </div>
   );

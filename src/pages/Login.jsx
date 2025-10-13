@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "../components/Schema/Login";
@@ -6,13 +7,12 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../store/slices/auth"; // ← Changed from userlogin to loginUser
 import { Eye, EyeOff } from "lucide-react";
-
-// Login Schema
+import { Link } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { error } = useSelector((state) => state.auth);
+  const { error, status } = useSelector((state) => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -27,20 +27,27 @@ function Login() {
   });
 
   const onSend = async (data) => {
-    // console.log("✅ Login Data:", data);
-    // reset();
     try {
+
+      const result = await dispatch(userlogin(data)).unwrap();
+      console.log("✅ Successfully logged in:", result);
+
+      if (result?.token) {
+        navigate("/Home");
+        reset();
+      }
+
       await dispatch(loginUser(data)).unwrap(); // ← Changed from userlogin to loginUser
       console.log(" successfully login :", data);
       navigate("/create");
       reset();
     } catch (err) {
-      console.error("Failed to register:", err);
+      console.error("❌ Login error:", err);
     }
   };
 
   return (
-    <div className="flex justify-center items-start mt-30 mr-70">
+    <div className="flex justify-center items-start mt-50 ">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Log In
@@ -67,7 +74,7 @@ function Login() {
           </div>
 
           {/* Password */}
-          <div className="flex flex-col gap-1 relative ">
+          <div className="flex flex-col gap-1 relative">
             <input
               type={showPassword ? "text" : "password"}
               {...register("password")}
@@ -96,23 +103,31 @@ function Login() {
 
           <button
             type="submit"
-            className="bg-blue-700 text-white py-2 rounded-lg font-semibold  hover:bg-blue-700 transition duration-300 cursor-pointer"
+            disabled={status === "loading"}
+            className={`py-2 rounded-lg font-semibold text-white ${
+              status === "loading"
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-700 hover:bg-blue-800"
+            }`}
           >
-            Login
+            {status === "loading" ? "Logging in..." : "Login"}
           </button>
 
           {error && <p className="text-red-600 mt-2 text-center">{error}</p>}
         </form>
+
+                <div className="text-center mt-4 text-sm text-gray-800">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-indigo-600 hover:underline">
+            Sign Up
+          </Link>
+        </div>
 
         <div className="text-center mt-4">
           <a href="#" className="text-sm text-indigo-600 hover:underline">
             Forgot your password?
           </a>
         </div>
-
-        <p className="text-center text-gray-600 mt-4 text-sm">
-  
-        </p>
       </div>
     </div>
   );
