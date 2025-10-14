@@ -35,7 +35,7 @@ function App() {
         {isAuthenticated && <Sidebar />}
         <main className="flex-grow">
           <Routes>
-            {/* <Route path="/" element={<Register/>} /> */}
+        
 
             <Route
               path="/register"
@@ -45,18 +45,18 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            {/* <Route path="/Home" element={ <Home/>} /> */}
+       
 
             <Route
-              path="/Home"
+              path="/home"
               element={
                 <ProtectedRoute requireAuth={true}>
-                  <Home />
+                  <Home/>
                 </ProtectedRoute>
               }
             />
 
-            {/* <Route path="/login" element={ <Login/>} /> */}
+ 
 
             <Route
               path="/login"
@@ -67,7 +67,7 @@ function App() {
               }
             />
 
-            {/* <Route path="/search" element={<SearchPage />} /> */}
+   
 
             <Route
               path="/search"
@@ -78,7 +78,7 @@ function App() {
               }
             />
 
-            {/* <Route path="/notifications" element={<NotificationsList />} /> */}
+
 
             <Route
               path="/notifications"
@@ -89,7 +89,7 @@ function App() {
               }
             />
 
-            {/* <Route path="/create" element={<Create />} /> */}
+      
 
             <Route
               path="/create"
@@ -100,7 +100,7 @@ function App() {
               }
             />
 
-            {/* <Route path="/Profile" element={<Profile />} /> */}
+     
 
             <Route
               path="/profile"
@@ -110,7 +110,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            {/* <Route path="/Create" element={<Create />} /> */}
+      
 
             <Route
               path="/notification"
@@ -121,7 +121,7 @@ function App() {
               }
             />
 
-            {/* <Route path="/notifications" element={<Notification />} /> */}
+          
           </Routes>
         </main>
       </div>
