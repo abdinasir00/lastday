@@ -1,7 +1,4 @@
-
 import { NavLink } from "react-router-dom";
-
-import { NavLink, Link } from "react-router-dom"
 import { Home, Search, Bell, User, Plus } from "lucide-react";
 
 const links = [
