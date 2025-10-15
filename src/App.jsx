@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 // import Create from "./pages/Create"
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-// import { Home } from "lucide-react";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import NotificationsList from "./pages/NotificationsList";
@@ -34,9 +33,15 @@ function App() {
       <div className="flex flex-1">
         {isAuthenticated && <Sidebar />}
         <main className="flex-grow">
-          <Routes>
-        
-
+         <Routes>
+          <Route
+            path="/Home"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
             <Route
               path="/register"
               element={
@@ -45,8 +50,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-       
-
             <Route
               path="/"
               element={
@@ -55,9 +58,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
- 
-
             <Route
               path="/login"
               element={

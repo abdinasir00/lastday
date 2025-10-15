@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadImage, CreatePost } from "../store/slices/PostSlices";
+import { uploadImage, createPost } from "../store/slices/PostSlices";
 import { Image } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

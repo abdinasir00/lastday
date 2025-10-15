@@ -3,7 +3,7 @@ import { LogOut, BadgePlus } from "lucide-react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // import { logOut } from "../store/slices/auth";
-import { userLogout } from "../store/slices/auth";
+// import { userLogout } from "../store/slices/auth";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();

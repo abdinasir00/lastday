@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RegisterSchema } from "../components/Schema/Register";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userRegister } from "../store/slices/auth";
+import { registerUser } from "../store/slices/auth";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Eye, EyeOff } from "lucide-react";

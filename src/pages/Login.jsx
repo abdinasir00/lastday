@@ -5,7 +5,7 @@ import { LoginSchema } from "../components/Schema/Login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { userlogin } from "../store/slices/auth";
+import { loginUser } from "../store/slices/auth";
 import { Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 
