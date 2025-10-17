@@ -46,7 +46,7 @@ function CreatePostForm() {
       storageId: imageData?.storageId || "",
     };
 
-    await dispatch(CreatePost(payload));
+    await dispatch(createPost(payload));
 
     setText("");
     setFile(null);

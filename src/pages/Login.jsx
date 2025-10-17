@@ -28,13 +28,13 @@ function Login() {
 
   const onSend = async (data) => {
     try {
-      const result = await dispatch(userlogin(data)).unwrap();
+      const result = await dispatch(loginUser(data)).unwrap();
       console.log("✅ Successfully logged in:", result);
 
-      if (result?.token) {
-        navigate("/Home");
+    
+        navigate("/home");
         reset();
-      }
+      
     } catch (err) {
       console.error("❌ Login error:", err);
     }

@@ -27,7 +27,7 @@ function Register() {
 
   const onSend = async (data) => {
     try {
-      await dispatch(userRegister(data)).unwrap();
+      await dispatch(registerUser(data)).unwrap();
       console.log("Registered successfully:", data);
       navigate("/login");
       reset();

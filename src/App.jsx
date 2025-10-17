@@ -1,7 +1,7 @@
-import Notification from "./pages/Notification";
+// import NotificationsList from "./pages/NotificationsList";
 import Create from "./pages/Create";
 import Sidebar from "./components/Sidebar";
-import Navbar from "./components/NAvbar";
+import Navbar from "./components/Navbar";
 import { Routes, Route } from "react-router-dom";
 import SearchPage from "./pages/SearchPage";
 import { useSelector } from "react-redux";
@@ -17,7 +17,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoutes";
 
 function App() {
   const { isAuthenticated, status } = useSelector((state) => state.auth);
-
+  console.log("authenticated", isAuthenticated)
   // Loading spinner
   if (status === "loading") {
     return (
@@ -28,14 +28,14 @@ function App() {
   }
   return (
     <div className="flex flex-col main-h-screen">
-      {isAuthenticated && <Navbar />}
+      <Navbar />
       {/* <Navbar user={currentUser.name} avatar={currentUser.avatar} /> */}
       <div className="flex flex-1">
         {isAuthenticated && <Sidebar />}
         <main className="flex-grow">
          <Routes>
           <Route
-            path="/Home"
+            path="/home"
             element={
               <ProtectedRoute requireAuth={true}>
                 <Home />
@@ -50,14 +50,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute requireAuth={true}>
-                  <Home/>
-                </ProtectedRoute>
-              }
-            />
+          
             <Route
               path="/login"
               element={
@@ -110,16 +103,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-      
-
-            <Route
-              path="/notification"
-              element={
-                <ProtectedRoute requireAuth={true}>
-                  <Notification />
-                </ProtectedRoute>
-              }
-            />
+  
 
           
           </Routes>

@@ -1,195 +1,90 @@
-
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { BASE_URL } from "../BaseUrl";
 
-//
-// ─── ASYNC THUNKS ────────────────────────────────────────────────────────────────
-//
+const API_URL = `${BASE_URL}/notifications`;
 
-// 1️⃣ Create Notification
-export const createNotification = createAsyncThunk(
-  "Noty/createNotification",
-  async (notificationData, { rejectWithValue }) => {
-    try {
-      const res = await axios.post(`${BASE_URL}/notifications`, notificationData);
-      console.log("Created notification:", res.data);
-      return res.data;
-    } catch (error) {
-      const message = error.response?.data?.error || error.message;
-      return rejectWithValue(message);
-    }
-  }
-);
+export const getAuthHeader = () => {
+  const token = localStorage.getItem("authToken");
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  };
+};
 
-// 2️⃣ Get All Notifications
-export const getAllNotifications = createAsyncThunk(
-  "Noty/getAllNotifications",
+// 1️⃣ Get All Notifications
+export const fetchNotifications = createAsyncThunk(
+  "notifications/fetchNotifications",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${BASE_URL}/notifications`);
-      console.log("All notifications:", res.data);
+      const res = await axios.get(API_URL, getAuthHeader());
       return res.data;
     } catch (error) {
-      const message = error.response?.data?.error || error.message;
-      return rejectWithValue(message);
+      return rejectWithValue(error.response?.data?.error || "Failed to fetch");
     }
   }
 );
 
-// 3️⃣ Get Single Notification by ID
-export const getSingleNotification = createAsyncThunk(
-  "Noty/getSingleNotification",
-  async (id, { rejectWithValue }) => {
+// 3️⃣ Mark All as Read
+export const markAllNotificationsRead = createAsyncThunk(
+  "notifications/markAllRead",
+  async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${BASE_URL}/notifications/${id}`);
-      console.log("Single notification:", res.data);
-      return res.data;
+      const res = await axios.put(`${API_URL}/read-all`, {}, getAuthHeader());
+      return res.data.updated_count;
     } catch (error) {
-      const message = error.response?.data?.error || error.message;
-      return rejectWithValue(message);
+      return rejectWithValue(error.response?.data?.error || "Failed to mark all");
     }
   }
 );
 
-// 4️⃣ Update Notification by ID
-export const updateNotification = createAsyncThunk(
-  "Noty/updateNotification",
-  async ({ id, updatedData }, { rejectWithValue }) => {
-    try {
-      const res = await axios.put(`${BASE_URL}/notifications/${id}`, updatedData);
-      console.log("Updated notification:", res.data);
-      return res.data;
-    } catch (error) {
-      const message = error.response?.data?.error || error.message;
-      return rejectWithValue(message);
-    }
-  }
-);
-
-// 5️⃣ Delete Notification by ID
-export const deleteNotification = createAsyncThunk(
-  "Noty/deleteNotification",
-  async (id, { rejectWithValue }) => {
-    try {
-      await axios.delete(`${BASE_URL}/notifications/${id}`);
-      console.log("Deleted notification ID:", id);
-      return id; // return the deleted ID for removing from state
-    } catch (error) {
-      const message = error.response?.data?.error || error.message;
-      return rejectWithValue(message);
-    }
-  }
-);
-
-//
-// ─── INITIAL STATE ───────────────────────────────────────────────────────────────
-//
-
+// Initial State
 const initialState = {
   notifications: [],
-  singleNotification: null,
-  status: "idle",
+  unreadCount: 0,
+  loading: false,
   error: null,
 };
 
-//
-// ─── SLICE ──────────────────────────────────────────────────────────────────────
-//
-
-const notificationSlice = createSlice({
-  name: "Noty",
+const notificationsSlice = createSlice({
+  name: "notifications",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // ─────────────────────────────
-      // CREATE
-      // ─────────────────────────────
-      .addCase(createNotification.pending, (state) => {
-        state.status = "loading";
+      .addCase(fetchNotifications.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(createNotification.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.notifications.push(action.payload);
-      })
-      .addCase(createNotification.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      })
-
-      // ─────────────────────────────
-      // READ (ALL)
-      // ─────────────────────────────
-      .addCase(getAllNotifications.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getAllNotifications.fulfilled, (state, action) => {
-        state.status = "succeeded";
+      .addCase(fetchNotifications.fulfilled, (state, action) => {
         state.notifications = action.payload;
+        state.unreadCount = action.payload.filter((n) => !n.is_read).length;
+        state.loading = false;
       })
-      .addCase(getAllNotifications.rejected, (state, action) => {
-        state.status = "failed";
+      .addCase(fetchNotifications.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       })
-
-      // ─────────────────────────────
-      // READ (SINGLE)
-      // ─────────────────────────────
-      .addCase(getSingleNotification.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getSingleNotification.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.singleNotification = action.payload;
-      })
-      .addCase(getSingleNotification.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      })
-
-      // ─────────────────────────────
-      // UPDATE
-      // ─────────────────────────────
-      .addCase(updateNotification.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(updateNotification.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        const index = state.notifications.findIndex(
-          (n) => n.id === action.payload.id
-        );
-        if (index !== -1) {
-          state.notifications[index] = action.payload;
-        }
-      })
-      .addCase(updateNotification.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      })
-
-      // ─────────────────────────────
-      // DELETE
-      // ─────────────────────────────
-      .addCase(deleteNotification.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(deleteNotification.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.notifications = state.notifications.filter(
-          (n) => n.id !== action.payload
-        );
-      })
-      .addCase(deleteNotification.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
+      .addCase(markAllNotificationsRead.fulfilled, (state) => {
+        state.notifications.forEach((n) => (n.is_read = true));
+        state.unreadCount = 0;
       });
   },
 });
 
-//
-// ─── EXPORT ─────────────────────────────────────────────────────────────────────
-//
+// Selector to get all notifications
+export const selectAllNotifications = (state) => state.notifications.notifications;
 
-export default notificationSlice.reducer;
+// Selector to get loading status
+export const selectNotificationsLoading = (state) => state.notifications.loading;
+
+// Selector to get error
+export const selectNotificationsError = (state) => state.notifications.error;
+
+export default notificationsSlice.reducer;
+
+
+
+
