@@ -12,8 +12,8 @@ function Home() {
   const [imageError, setImageError] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
-  console.log("USER in Home:", user);
-  console.log("User avatar URL:", user?.avatarUrl);
+  // console.log("USER in Home:", user);
+  // console.log("User avatar URL:", user?.avatarUrl);
   const { posts, status, error } = useSelector((state) => state.post);
 
   const loggedInUserId = user?._id || user?.id;

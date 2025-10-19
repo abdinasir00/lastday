@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { Home, Search, Bell, User, Plus } from "lucide-react";
 
 const links = [
-  { to: "/home", icon: <Home className="h-6 w-6" />, label: "Home" },
+  { to: "/", icon: <Home className="h-6 w-6" />, label: "Home" },
   { to: "/search", icon: <Search className="h-6 w-6" />, label: "Search" },
   { to: "/create", icon: <Plus className="h-6 w-6" />, label: "Create" },
   {

@@ -35,7 +35,7 @@ function App() {
         <main className="flex-grow">
          <Routes>
           <Route
-            path="/home"
+            path="/"
             element={
               <ProtectedRoute requireAuth={true}>
                 <Home />

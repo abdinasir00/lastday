@@ -13,7 +13,6 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error, status } = useSelector((state) => state.auth);
-
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -29,10 +28,10 @@ function Login() {
   const onSend = async (data) => {
     try {
       const result = await dispatch(loginUser(data)).unwrap();
-      console.log("✅ Successfully logged in:", result);
+      console.log(" Successfully logged in:", result);
 
     
-        navigate("/home");
+        navigate("/");
         reset();
       
     } catch (err) {
