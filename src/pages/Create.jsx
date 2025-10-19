@@ -51,7 +51,7 @@ function CreatePostForm() {
     setText("");
     setFile(null);
     setPreview("");
-    navigate("/home")
+    navigate("/")
   };
 
   return (

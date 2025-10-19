@@ -17,7 +17,7 @@ const Sidebar = () => {
   return (
     <>
       {/* Desktop Sidebar - Static, left, 400px width, full height */}
-      <div className="hidden md:flex flex-col fixed left-0 top-0 bottom-0 bg-white w-[250px] h-full px-6 py-8 space-y-4 shadow-md z-20 mt-15">
+      <div className="hidden md:flex flex-col fixed left-0 top-0 bottom-0 bg-white- w-[220px] h-full px-6 py-8 space-y-4 shadow-md z-20 mt-15">
         {links.map((item) => (
           <NavLink
             key={item.to}
