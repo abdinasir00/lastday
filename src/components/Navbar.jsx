@@ -3,9 +3,10 @@ import { LogOut, Bell } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchNotifications } from "../store/slices/notificationSlice";
+import { User } from "lucide-react";
 
 
-import {logoutUser } from "../store/slices/auth"; 
+import { logoutUser } from "../store/slices/auth";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -48,8 +49,8 @@ const Navbar = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-50 bg-white text-black shadow-md">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+       <header className="fixed top-0 left-0 w-full z-50 bg-white text-black shadow-md  ">
+        <div className="container mx-auto px-1 py-4 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <span className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-600 text-white font-bold">
@@ -81,11 +82,18 @@ const Navbar = () => {
                   {/* Profile Link */}
                   <li>
                     <Link to="/profile" className="flex items-center gap-x-2">
-                      <img
-                      src={user?.avatarUrl}
-                      className="h-10 w-10 rounded-full object-cover"
-                      alt="avatar"
-                    />
+                     {user?.avatarUrl ? (
+  <img
+    src={user.avatarUrl}
+    alt="avatar"
+    className="h-8 w-8 rounded-full object-cover"
+  />
+) : (
+  <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-gray-200">
+    <User className="text-gray-600" size={20} />
+  </div>
+)}
+
 
                       <span className="text-base font-medium text-black">
                         {user?.name || "User"}
@@ -97,9 +105,9 @@ const Navbar = () => {
                   <li>
                     <button
                       onClick={handleLogout}
-                      className="flex items-center gap-2 px-3 py-2 bg-blue-800 rounded-lg hover:bg-blue-100 transition"
+                      className="flex items-center gap-2 px-1 py-2  rounded-lg hover:bg-blue-100 transition"
                     >
-                      <LogOut className="h-5 w-5 text-black-700 font-800" />
+                      <LogOut className="h-5 w-5 text-black-700 font-100" />
                     
                     </button>
                   </li>
@@ -135,13 +143,13 @@ const Navbar = () => {
                   </span>
                 </Link>
               </li>
-
+             
               <li>
                 <button
                   onClick={() => navigate("/notifications")}
                   className="flex items-center gap-x-2 relative"
                 >
-                  <Bell className="h-5 w-5 text-gray-700" />
+                  <Bell className="h-7 w-7 text-gray-700" />
                   <span>Notifications</span>
                   {unreadCount > 0 && (
                     <span className="absolute -top-2 left-24 h-5 w-5 bg-red-600 text-white text-xs font-bold rounded-full flex items-center justify-center">
